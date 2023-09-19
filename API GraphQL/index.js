@@ -14,6 +14,10 @@ import axios from 'axios';
 const app = express();
 connectDB();
 
+const bar1 = [
+	{name: 'bar1', value: 1},
+	{name: 'bar2', value: 2},
+];
 app.use(cors(), function (request, response, next) {
 	request.io = io;
 	next();
@@ -49,25 +53,48 @@ app.get('/', async (req, res) => {
 	res.send('welcome to my api');
 });
 
+app.get('/bar1', async (req, res) => {
+	const index = bar1.findIndex((v) => v.name === 'bar1');
+	bar1[index].value = bar1[index].value + 1;
+	req.io.emit('barStats', bar1);
+	// send api data, route, info , etc to web client, axios, etc
+	res.send('Bar 1 change');
+});
+app.get('/bar2', async (req, res) => {
+	const index = bar1.findIndex((v) => v.name === 'bar2');
+	bar1[index].value = bar1[index].value + 1;
+	req.io.emit('barStats', bar1);
+	// send api data, route, info , etc to web client, axios, etc
+	res.send('Bar 2 change');
+});
+
 io.on('connection', (socket) => {
 	console.log(`User Connected: ${socket.id}`);
-
-	/* const interval = setInterval(function () {
-		os.cpuUsage((cpuPercent) => {
-			io.emit('msg', {
-				name: 'cpu',
-				value: cpuPercent,
-			});
+	console.log(bar1);
+	io.emit('barStats', bar1);
+	let timer = 0;
+	const interval = setInterval(function () {
+		timer = timer + 10;
+		io.emit('msg', {
+			name: timer + ' s',
+			value: Math.random() * (50 - 0) + 0,
+			value2: Math.random() * (50 - 0) + 0,
 		});
+		/* os.cpuUsage((cpuPercent) => {
+			io.emit('msg', {
+				name: timer + ' s',
+				value: cpuPercent * 100,
+			});
+		}); */
 	}, 10000);
 
 	socket.on('send_msg', (data) => {
 		io.emit('msg', `${data}`);
-	}); */
+	});
 
 	socket.on('disconnect', function () {
 		console.log('Got disconnect!');
-		//clearInterval(interval);
+		clearInterval(interval);
 	});
 });
 

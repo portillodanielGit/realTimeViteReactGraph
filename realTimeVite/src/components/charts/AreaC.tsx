@@ -53,20 +53,30 @@ const data = [
 	},
 ];
 
-export default function AreaC() {
+export default function AreaC(props: any) {
 	return (
 		<div>
 			<ResponsiveContainer width='100%' height={300}>
 				<AreaChart
-					data={data}
+					data={props.data}
 					margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
 				>
 					<CartesianGrid strokeDasharray='3 3' />
-					<XAxis dataKey='name' />
+					<XAxis interval='equidistantPreserveStart' dataKey='name' />
 					<YAxis />
 					<Tooltip />
-					<Area type='monotone' dataKey='pv' stroke='#8884d8' fill='#8884d8' />
-					<Area type='monotone' dataKey='uv' stroke='#8884d8' fill='#8884d8' />
+					<Area
+						type='monotone'
+						dataKey='value'
+						stroke='#8884d8'
+						fill='#8884d8'
+					/>
+					<Area
+						type='monotone'
+						dataKey='value2'
+						stroke='#82ca9d'
+						fill='#82ca9d'
+					/>
 				</AreaChart>
 			</ResponsiveContainer>
 		</div>
